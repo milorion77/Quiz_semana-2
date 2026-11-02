@@ -10,21 +10,21 @@
 
 # 1) LA CLASE: representa UNA empresa (datos + comportamiento juntos)
 class Empresa:
-    """Representa UNA empresa: encapsula sus datos y su comportamiento."""
+    """Representa una empresa: encapsula sus datos y su comportamiento."""
 
     # El CONSTRUCTOR se ejecuta al crear el objeto y guarda sus datos.
     # 'self' es el propio objeto que se esta construyendo.
     def __init__(self, nombre, sector, num_empleados, ingresos_anuales):
-        # TODO: guarda cada parametro como un atributo del objeto (self.xxx = ...).
-        #       Recuerda convertir num_empleados e ingresos_anuales a numero con int().
-        pass
+        self.nombre = nombre
+        self.sector = sector
+        # Se convierten a int porque al leer del archivo llegan como texto.
+        self.num_empleados = int(num_empleados)
+        self.ingresos_anuales = int(ingresos_anuales)
 
     def obtener_informacion(self):
         """Devuelve los datos de la empresa como un texto legible."""
-        # TODO: devuelve un texto con los datos del objeto, por ejemplo:
-        #       "TechNova | TECNOLOGIA | 150 empleados | $500000000"
-        #       Usa un f-string con los atributos de self.
-        return ""
+        return (f"{self.nombre} | {self.sector} | "
+                f"{self.num_empleados} empleados | ${self.ingresos_anuales}")
 
 
 # 2) Leer el archivo y crear una LISTA DE OBJETOS Empresa
@@ -38,39 +38,51 @@ def leer_empresas(nombre_archivo):
     with open(nombre_archivo, "r", encoding="utf-8") as archivo:
         for linea in archivo:
             nombre, sector, num_empleados, ingresos_anuales = linea.strip().split(",")
-            # TODO: si int(num_empleados) > 0, crea un objeto Empresa y agregalo a la lista.
-            pass
+            # Solo se crea el objeto si el registro es valido empleados > 0 , para ignorar la trampa.
+            if int(num_empleados) > 0:
+                empresas.append(Empresa(nombre, sector, num_empleados, ingresos_anuales))
     return empresas
 
 
 # 3) Sumar los ingresos de todas las empresas
 def calcular_total_ingresos(empresas):
     """Devuelve la suma de los ingresos_anuales de todas las empresas."""
-    # TODO: recorre la lista y suma el atributo ingresos_anuales de cada empresa.
-    return 0
+    total = 0
+    for empresa in empresas:
+        total += empresa.ingresos_anuales
+    return total
 
 
 # 4) Quedarse solo con las empresas de un sector
 def filtrar_por_sector(empresas, sector):
     """Devuelve una lista con las empresas cuyo sector coincide."""
-    # TODO: devuelve una lista solo con las empresas de ese sector.
-    return []
+    filtradas = []
+    for empresa in empresas:
+        if empresa.sector == sector:
+            filtradas.append(empresa)
+    return filtradas
 
 
 # 5) Encontrar la empresa con mas empleados
 def empresa_con_mas_empleados(empresas):
     """Devuelve el objeto Empresa que tiene mas empleados."""
-    # TODO: recorre la lista y devuelve la empresa con el mayor num_empleados.
-    #       Si la lista esta vacia, devuelve None.
-    return None
+    mejor = None
+    for empresa in empresas:
+        if mejor is None or empresa.num_empleados > mejor.num_empleados:
+            mejor = empresa
+    return mejor
 
 
 # 6) Calcular el promedio de empleados
 def promedio_empleados(empresas):
     """Devuelve el promedio de empleados de todas las empresas."""
-    # TODO: suma los empleados y divide entre la cantidad de empresas.
-    #       Si la lista esta vacia, devuelve 0 (evita dividir entre cero).
-    return 0
+    if len(empresas) == 0:
+        return 0  # evita dividir entre cero
+    total_empleados = 0
+    for empresa in empresas:
+        total_empleados += empresa.num_empleados
+    # Se redondea a 2 decimales para coincidir con la salida esperada.
+    return round(total_empleados / len(empresas), 2)
 
 
 # 7) Funcion principal: usa todo lo anterior y muestra los resultados
